@@ -1,9 +1,12 @@
+using AutoMapper;
 using EmployeeListApplication.Core.Infrastructure;
 using EmployeeListApplication.Core.Infrastructure.Repositories;
 using EmployeeListApplication.Core.Infrastructure.Repositories.Interfaces;
 using EmployeeListApplication.Core.Services;
 using EmployeeListApplication.Core.Services.Interfaces;
+using EmployeeListApplication.Server;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,9 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 // Add Entity Framework and use sql server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
