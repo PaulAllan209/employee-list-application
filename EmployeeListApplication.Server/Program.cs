@@ -1,11 +1,20 @@
 using EmployeeListApplication.Core.Infrastructure;
+using EmployeeListApplication.Core.Infrastructure.Repositories;
+using EmployeeListApplication.Core.Infrastructure.Repositories.Interfaces;
+using EmployeeListApplication.Core.Services;
+using EmployeeListApplication.Core.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+// Register Services
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+// Register Repositories
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 // Add Entity Framework and use sql server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

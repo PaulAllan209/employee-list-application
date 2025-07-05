@@ -28,9 +28,11 @@ namespace EmployeeListApplication.Core.Services
             return employee;
         }
 
-        public Task<IEnumerable<Employee>> GetAllEmployeesAsync(bool trackChanges)
+        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync(bool trackChanges)
         {
-            throw new NotImplementedException();
+            var employeeEntities = await _employeeRepository.GetAllEmployeesAsync(trackChanges);
+
+            return employeeEntities;
         }
 
         public Task UpdateEmployeeAsync()
