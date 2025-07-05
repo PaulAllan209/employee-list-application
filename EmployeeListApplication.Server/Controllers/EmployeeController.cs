@@ -46,9 +46,19 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetEmployeeById()
+        public async Task<IActionResult> GetEmployeeById(string employeeId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(employeeId))
+                return BadRequest(("Employee ID cannot be empty."));
+
+            // Validate GUIDs for ID to prevent unnecessary DB calls
+            if (!Guid.TryParse(employeeId, out _))
+                return BadRequest("Invalid Employee ID format.");
+
+            var employeeEntity = await _employeeService.GetEmployeeByIdAsync(employeeId, trackChanges: false);
+            var employeeDto = _mapper.Map<EmployeeForGetDto>(employeeEntity);
+
+            return Ok(employeeDto);
         }
     }
 }

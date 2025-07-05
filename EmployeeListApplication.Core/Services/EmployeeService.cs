@@ -35,6 +35,19 @@ namespace EmployeeListApplication.Core.Services
             return employeeEntities;
         }
 
+        public async Task<Employee> GetEmployeeByIdAsync(string employeeId, bool trackChanges)
+        {
+            if (string.IsNullOrEmpty(employeeId))
+                throw new ArgumentNullException("employeeId ID cannot be empty.", nameof(employeeId));
+
+            var employeeEntity = await _employeeRepository.GetEmployeeByIdAsync(Guid.Parse(employeeId), trackChanges);
+
+            if (employeeEntity == null)
+                throw new Exception($"Employee with ID: '{employeeId}' could not be found.");
+
+            return employeeEntity;
+        }
+
         public Task UpdateEmployeeAsync()
         {
             throw new NotImplementedException();
