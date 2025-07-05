@@ -1,4 +1,7 @@
-﻿using EmployeeListApplication.Core.Services.Interfaces;
+﻿using AutoMapper;
+using EmployeeListApplication.Core.Models;
+using EmployeeListApplication.Core.Services.Interfaces;
+using EmployeeListApplication.Server.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +12,41 @@ namespace EmployeeListApplication.Server.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, IMapper mapper)
         {
             _employeeService = employeeService;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEmployee()
+        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeForCreateDto employeeDto)
+        {
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            var employeeEntity = _mapper.Map<Employee>(employeeDto);
+
+            var employeeEntityReturned = await _employeeService.CreateEmployeeAsync(employeeEntity);
+
+            var employeeDtoToReturn = _mapper.Map<EmployeeForGetDto>(employeeEntityReturned);
+
+            return Ok(employeeDtoToReturn);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmployees()
+        {
+            var employeeEntities = await _employeeService.GetAllEmployeesAsync(trackChanges: false);
+
+            var employeeDtos = _mapper.Map<IEnumerable<EmployeeForGetDto>>(employeeEntities);
+
+            return Ok(employeeDtos);
+        }
+
+        [HttpGet("{employeeId}")]
+        public async Task<IActionResult> GetEmployeeById()
         {
             throw new NotImplementedException();
         }
