@@ -49,7 +49,6 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
                 return _dbContext.Set<Employee>().Where(expression).AsTracking();
             else
                 return _dbContext.Set<Employee>().Where(expression).AsNoTracking();
-
         }
     }
 }
