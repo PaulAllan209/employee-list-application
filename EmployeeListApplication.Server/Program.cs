@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+// AddNewtonsoftJson are for json patch documents
+builder.Services.AddControllers().AddNewtonsoftJson(); 
 
 // Register Services
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();

@@ -22,7 +22,7 @@ namespace EmployeeListApplication.Core.Services
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
 
-            await _employeeRepository.CreateEmployeeAsnyc(employee);
+            await _employeeRepository.CreateEmployeeAsync(employee);
             await _employeeRepository.SaveChangesAsync();
 
             return employee;
@@ -48,9 +48,9 @@ namespace EmployeeListApplication.Core.Services
             return employeeEntity;
         }
 
-        public Task UpdateEmployeeAsync()
+        public async Task UpdateEmployeeAsync()
         {
-            throw new NotImplementedException();
+            await _employeeRepository.SaveChangesAsync();
         }
 
         public async Task DeleteEmployeeAsync(string employeeId, bool trackChanges)

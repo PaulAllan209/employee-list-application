@@ -18,7 +18,7 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task CreateEmployeeAsnyc(Employee employee)
+        public async Task CreateEmployeeAsync(Employee employee)
         {
             await _dbContext.Set<Employee>().AddAsync(employee);
         }

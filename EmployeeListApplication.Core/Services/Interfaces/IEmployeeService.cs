@@ -12,7 +12,7 @@ namespace EmployeeListApplication.Core.Services.Interfaces
         Task<Employee> CreateEmployeeAsync(Employee employee);
         Task<IEnumerable<Employee>> GetAllEmployeesAsync(bool trackChanges);
         Task<Employee> GetEmployeeByIdAsync(string employeeId, bool trackChanges);
-        Task UpdateEmployeeAsync();
+        Task UpdateEmployeeAsync(); // This function just calls save changes in the repository layer
         Task DeleteEmployeeAsync(string employeeId, bool trackChanges);
     }
 }
