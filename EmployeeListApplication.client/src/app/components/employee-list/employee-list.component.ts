@@ -5,6 +5,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee.model';
@@ -14,7 +15,7 @@ import { ApiResponse } from '../../models/api-response.model';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [TableModule, CommonModule, ButtonModule, Dialog, InputTextModule, FormsModule],
+  imports: [TableModule, CommonModule, ButtonModule, Dialog, InputTextModule, FormsModule, TooltipModule],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss'
 })
@@ -22,6 +23,10 @@ export class EmployeeListComponent {
   employees!: Employee[];
   loading: boolean = true;
   createEmployeeVisible: boolean = false;
+
+  editingEmployeeId: string | null = null;
+  editingEmployee: Employee | null = null;
+  originalEmployee: Employee | null = null;
 
   constructor(private employeeService: EmployeeService) {}
 
@@ -73,6 +78,56 @@ export class EmployeeListComponent {
         this.loading = false;
       }
     });
+  }
+
+  startEdit(employee: Employee) {
+    this.editingEmployeeId = employee.id ?? null;
+    this.editingEmployee = { ...employee }; // create a copy
+    this.originalEmployee = { ...employee }; // Keep original for cancel
+  }
+
+  cancelEdit() {
+    this.editingEmployeeId = null;
+    this.editingEmployee = null;
+    this.originalEmployee = null;
+  }
+
+  saveEdit(employeeId: string) {
+    this.updateEmployee(employeeId, this.editingEmployee);
+  }
+
+  updateEmployee(id: string, updatedEmployee: Employee | null) {
+    if (updatedEmployee != null && this.originalEmployee != null){
+      const changedFields = this.getChangedFields(this.originalEmployee, updatedEmployee);
+
+      if(Object.keys(changedFields).length > 0) {
+         this.employeeService.updateEmployee(id, changedFields).subscribe({
+          next: (response) => {
+            const index = this.employees.findIndex(emp => emp.id === id);
+            if (index !== -1) {
+              this.employees[index] = { ...updatedEmployee };
+            }
+            this.cancelEdit();
+        },
+          error: (error) => {
+            console.error('Error updating employee:', error);
+            this.cancelEdit();
+        }
+      });
+      }
+    }
+  }
+
+  private getChangedFields(original: Employee, current: Employee): Partial<Employee> {
+    const changes: Partial<Employee> = {};
+    
+    (Object.keys(current) as (keyof Employee)[]).forEach(key => {
+      if (original[key] !== current[key]) {
+        changes[key] = current[key];
+      }
+    });
+    
+    return changes;
   }
 
   deleteEmployee(id: string) {

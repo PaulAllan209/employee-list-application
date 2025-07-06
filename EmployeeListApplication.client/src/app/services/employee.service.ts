@@ -25,11 +25,23 @@ export class EmployeeService {
         return this.http.post<Employee>(this.apiUrl, employee);
     }
 
-    updateEmployee(id: string, employee: Partial<Employee>): Observable<ApiResponse<void>> {
-        return this.http.patch<ApiResponse<void>>(`${this.apiUrl}/${id}`, employee);
+    updateEmployee(id: string, employeeChangedFields: Partial<Employee>): Observable<void> {
+        const patchOperations = this.createPatchOperations(employeeChangedFields);
+        const headers = { 'Content-Type': 'application/json-patch+json' };
+        return this.http.patch<void>(`${this.apiUrl}/${id}`, patchOperations, { headers });
     }
 
-    deleteEmployee(id: string): Observable<ApiResponse<void>> {
-        return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
+    private createPatchOperations(updates: Partial<Employee>): any[] {
+    return Object.entries(updates)
+        .filter(([_, value]) => value !== undefined && value !== null)
+        .map(([key, value]) => ({
+            op: 'replace',
+            path: `/${key}`,
+            value: value
+        }));
+}
+
+    deleteEmployee(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

@@ -49,15 +49,70 @@
         <ng-template #body let-employee>
             <tr>
                 <td>{{employee.id}}</td>
-                <td>{{employee.firstName}}</td>
-                <td>{{employee.lastName}}</td>
-                <td>{{employee.email}}</td>
-                <td>{{employee.phoneNumber}}</td>
-                <td>{{employee.position}}</td>
+
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.firstName" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.firstName}}</span>
+                </td>
+
+                <!-- <td>{{employee.lastName}}</td> -->
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.lastName" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.lastName}}</span>
+                </td>
+
+                <!-- <td>{{employee.email}}</td> -->
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.email" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.email}}</span>
+                </td>
+
+                <!-- <td>{{employee.phoneNumber}}</td> -->
+                 <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.phoneNumber" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.phoneNumber}}</span>
+                </td>
+
+                <!-- <td>{{employee.position}}</td> -->
+                 <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.position" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.position}}</span>
+                </td>
                 <td>
                     <div class="card flex flex-wrap gap-4 justify-center">
-                        <p-button icon="pi pi-pencil" severity="info"/>
-                        <p-button (onClick)="deleteEmployee(employee.id)" icon="pi pi-trash" severity="danger"/>
+                        <!-- Edit mode buttons -->
+                        <p-button *ngIf="editingEmployeeId === employee.id" 
+                            icon="pi pi-check"
+                            severity="success"
+                            (onClick)="saveEdit(employee.id)"
+                            pTooltip="Save" />
+                        <p-button *ngIf="editingEmployeeId === employee.id"
+                            icon="pi pi-times"
+                            severity="secondary" 
+                            (onClick)="cancelEdit()"
+                            pTooltip="Cancel"/>
+
+                        
+                        <!-- Normal mode buttons -->
+                        <p-button *ngIf="editingEmployeeId !== employee.id"
+                            icon="pi pi-pencil" 
+                            severity="info"
+                            (onClick)="startEdit(employee)"
+                            pTooltip="Edit"/>
+                        <p-button *ngIf="editingEmployeeId !== employee.id"
+                            (onClick)="deleteEmployee(employee.id)" 
+                            icon="pi pi-trash" 
+                            severity="danger"/>
                     </div>
                     
                 </td>
