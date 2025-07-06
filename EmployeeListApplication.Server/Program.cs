@@ -1,11 +1,13 @@
 using AutoMapper;
 using EmployeeListApplication.Core.Infrastructure;
+using EmployeeListApplication.Core.Infrastructure.Interfaces;
 using EmployeeListApplication.Core.Infrastructure.Repositories;
 using EmployeeListApplication.Core.Infrastructure.Repositories.Interfaces;
 using EmployeeListApplication.Core.Services;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +36,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// For Auto DB Creation and Seeding
+builder.Services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,5 +66,19 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// SEED DATABASE
+using var scope = app.Services.CreateScope();
+try
+{
+    var dbSeeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
+    await dbSeeder.SeedAsync();
+}
+catch (Exception ex)
+{;
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    logger.LogCritical(ex, "An error occurred while seeding database");
+    throw;
+}
 
 app.Run();
