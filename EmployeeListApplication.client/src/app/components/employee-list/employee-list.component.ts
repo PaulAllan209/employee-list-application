@@ -3,17 +3,25 @@ import { Component } from '@angular/core';
 // import { ProductService } from '@/service/productservice';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { Employee } from '../../models/Employee.Model';
 
+
 @Component({
   selector: 'app-employee-list',
-  imports: [TableModule, CommonModule, ButtonModule],
+  imports: [TableModule, CommonModule, ButtonModule, Dialog, InputTextModule],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss'
 })
 export class EmployeeListComponent {
   employees!: Employee[];
+  createEmployeeVisible: boolean = false;
+
+  showCreateDialog() {
+    this.createEmployeeVisible = true;
+  }
 
   ngOnInit(){
     this.employees = [
