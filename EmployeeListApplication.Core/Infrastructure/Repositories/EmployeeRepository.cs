@@ -18,7 +18,7 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task CreateEmployeeAsnyc(Employee employee)
+        public async Task CreateEmployeeAsync(Employee employee)
         {
             await _dbContext.Set<Employee>().AddAsync(employee);
         }
@@ -38,6 +38,11 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
             return await FindByCondition(e => employeeId == e.Id, trackChanges).FirstOrDefaultAsync();
         }
 
+        public void DeleteEmployee(Employee employee)
+        {
+            _dbContext.Set<Employee>().Remove(employee);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
@@ -49,7 +54,6 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
                 return _dbContext.Set<Employee>().Where(expression).AsTracking();
             else
                 return _dbContext.Set<Employee>().Where(expression).AsNoTracking();
-
         }
     }
 }
