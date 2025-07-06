@@ -2,7 +2,6 @@
 using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server.Dto;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeListApplication.Server.Controllers
@@ -59,6 +58,21 @@ namespace EmployeeListApplication.Server.Controllers
             var employeeDto = _mapper.Map<EmployeeForGetDto>(employeeEntity);
 
             return Ok(employeeDto);
+        }
+
+        [HttpDelete("{employeeId}")]
+        public async Task<IActionResult> DeleteEmployee(string employeeId)
+        {
+            if (string.IsNullOrEmpty(employeeId))
+                return BadRequest("Employee ID cannot be empty.");
+
+            // Validate GUIDs for ID to prevent unnecessary DB calls
+            if (!Guid.TryParse(employeeId, out _))
+                return BadRequest("Invalid Employee ID format.");
+
+            await _employeeService.DeleteEmployeeAsync(employeeId, trackChanges: true);
+
+            return NoContent();
         }
     }
 }

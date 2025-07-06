@@ -53,9 +53,20 @@ namespace EmployeeListApplication.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task DeleteEmployeeAsync(string employeeId, bool trackChanges)
+        public async Task DeleteEmployeeAsync(string employeeId, bool trackChanges)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(employeeId))
+                throw new ArgumentNullException("Employee ID cannot be empty.", nameof(employeeId));
+
+            var employeeEntityToDelete = await _employeeRepository.GetEmployeeByIdAsync(Guid.Parse(employeeId), trackChanges);
+
+            if (employeeEntityToDelete == null)
+                throw new Exception($"Employee with ID: '{employeeId}' could not be found.");
+
+            // Repository layer actions
+            _employeeRepository.DeleteEmployee(employeeEntityToDelete);
+            await _employeeRepository.SaveChangesAsync();
+
         }
     }
 }

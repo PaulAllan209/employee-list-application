@@ -38,6 +38,11 @@ namespace EmployeeListApplication.Core.Infrastructure.Repositories
             return await FindByCondition(e => employeeId == e.Id, trackChanges).FirstOrDefaultAsync();
         }
 
+        public void DeleteEmployee(Employee employee)
+        {
+            _dbContext.Set<Employee>().Remove(employee);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
