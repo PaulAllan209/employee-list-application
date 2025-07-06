@@ -1,1 +1,35 @@
-<p>employee-list works!</p>
+<div class="p-5">
+    <p-button label="Create" icon="pi pi-plus" severity="success"/>
+</div>
+
+<div class="card">
+    <p-table [value]="employees" stripedRows [tableStyle]="{'min-width': '50rem'}">
+        <ng-template #header>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Position</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-employee>
+            <tr>
+                <td>{{employee.id}}</td>
+                <td>{{employee.FirstName}}</td>
+                <td>{{employee.LastName}}</td>
+                <td>{{employee.Email}}</td>
+                <td>{{employee.PhoneNumber}}</td>
+                <td>{{employee.Position}}</td>
+                <td>
+                    <div class="card flex flex-wrap gap-4 justify-center">
+                        <p-button icon="pi pi-pencil" severity="info"/>
+                        <p-button icon="pi pi-trash" severity="danger"/>
+                    </div>
+                    
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
