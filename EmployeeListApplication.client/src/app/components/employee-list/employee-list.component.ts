@@ -6,7 +6,9 @@ import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
-import { Employee } from '../../models/Employee.Model';
+import { Employee } from '../../models/employee.model';
+import { EmployeeService } from '../../services/employee.service';
+import { ApiResponse } from '../../models/api-response.model';
 
 
 @Component({
@@ -17,46 +19,29 @@ import { Employee } from '../../models/Employee.Model';
 })
 export class EmployeeListComponent {
   employees!: Employee[];
+  loading: boolean = true;
   createEmployeeVisible: boolean = false;
+
+  constructor(private employeeService: EmployeeService) {}
 
   showCreateDialog() {
     this.createEmployeeVisible = true;
   }
 
   ngOnInit(){
-    this.employees = [
-      {
-        id: '06CF26B5-5A8A-4673-70C4-08DDBC359C69',
-        FirstName: 'Paul',
-        LastName: 'Dela',
-        Email: 'dpaul@gmail.com',
-        PhoneNumber: '09216933288',
-        Position: 'c# dev'
+    this.fetchEmployees();
+  }
+
+  fetchEmployees(): void {
+    this.employeeService.getEmployees().subscribe({
+      next: (apiResponseData: Employee[]) => {
+        this.employees = apiResponseData;
+        this.loading = false;
       },
-      {
-        id: '06CF26B5-5A8A-4673-70C4-08DDBC359C69',
-        FirstName: 'Paul',
-        LastName: 'Dela',
-        Email: 'dpaul@gmail.com',
-        PhoneNumber: '09216933288',
-        Position: 'c# dev'
-      },
-      {
-        id: '06CF26B5-5A8A-4673-70C4-08DDBC359C69',
-        FirstName: 'Paul',
-        LastName: 'Dela',
-        Email: 'dpaul@gmail.com',
-        PhoneNumber: '09216933288',
-        Position: 'c# dev'
-      },
-      {
-        id: '06CF26B5-5A8A-4673-70C4-08DDBC359C69',
-        FirstName: 'Paul',
-        LastName: 'Dela',
-        Email: 'dpaul@gmail.com',
-        PhoneNumber: '09216933288',
-        Position: 'c# dev'
+      error: (err) => {
+        console.error('Error fetching employees', err);
+        this.loading = false;
       }
-    ];
+    });
   }
 }
