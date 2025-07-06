@@ -1,0 +1,122 @@
+<div class="p-5">
+    <p-button (click)="showCreateDialog()" label="Create" icon="pi pi-plus" severity="success"/>
+</div>
+
+<div class="card flex justify-center">
+    <p-dialog header="Create Employee" [modal]="true" [(visible)]="createEmployeeVisible" [style]="{ width: '50rem'}">
+        <span class="p-text-secondary block mb-8">Please fill out the information.</span>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="firstname" class="font-semibold w-24">First Name</label>
+            <input pInputText id="firstname" class="flex-auto" autocomplete="off" [(ngModel)]="newEmployee.firstName"/>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="lastname" class="font-semibold w-24">Last Name</label>
+            <input pInputText id="lastname" class="flex-auto" autocomplete="off" [(ngModel)]="newEmployee.lastName"/>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="email" class="font-semibold w-24">Email</label>
+            <input pInputText id="email" class="flex-auto" autocomplete="off" [(ngModel)]="newEmployee.email"/>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="phonenumber" class="font-semibold w-24">Phone Number</label>
+            <input pInputText id="phonenumber" class="flex-auto" autocomplete="off" [(ngModel)]="newEmployee.phoneNumber"/>
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="position" class="font-semibold w-24">Position</label>
+            <input pInputText id="position" class="flex-auto" autocomplete="off" [(ngModel)]="newEmployee.position"/>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="createEmployeeVisible = false" />
+            <p-button label="Save" (click)="saveEmployee()" />
+        </div>
+    </p-dialog>
+</div>
+
+
+<div class="card">
+    <p-table [value]="employees" stripedRows [tableStyle]="{'min-width': '50rem'}">
+        <ng-template #header>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Position</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-employee>
+            <tr>
+                <td>{{employee.id}}</td>
+
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.firstName" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.firstName}}</span>
+                </td>
+
+                <!-- <td>{{employee.lastName}}</td> -->
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.lastName" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.lastName}}</span>
+                </td>
+
+                <!-- <td>{{employee.email}}</td> -->
+                <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.email" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.email}}</span>
+                </td>
+
+                <!-- <td>{{employee.phoneNumber}}</td> -->
+                 <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.phoneNumber" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.phoneNumber}}</span>
+                </td>
+
+                <!-- <td>{{employee.position}}</td> -->
+                 <td>
+                    <input *ngIf="editingEmployeeId === employee.id && editingEmployee" 
+                           pInputText 
+                           [(ngModel)]="editingEmployee.position" />
+                    <span *ngIf="editingEmployeeId !== employee.id">{{employee.position}}</span>
+                </td>
+                <td>
+                    <div class="card flex flex-wrap gap-4 justify-center">
+                        <!-- Edit mode buttons -->
+                        <p-button *ngIf="editingEmployeeId === employee.id" 
+                            icon="pi pi-check"
+                            severity="success"
+                            (onClick)="saveEdit(employee.id)"
+                            pTooltip="Save" />
+                        <p-button *ngIf="editingEmployeeId === employee.id"
+                            icon="pi pi-times"
+                            severity="secondary" 
+                            (onClick)="cancelEdit()"
+                            pTooltip="Cancel"/>
+
+                        
+                        <!-- Normal mode buttons -->
+                        <p-button *ngIf="editingEmployeeId !== employee.id"
+                            icon="pi pi-pencil" 
+                            severity="info"
+                            (onClick)="startEdit(employee)"
+                            pTooltip="Edit"/>
+                        <p-button *ngIf="editingEmployeeId !== employee.id"
+                            (onClick)="deleteEmployee(employee.id)" 
+                            icon="pi pi-trash" 
+                            severity="danger"/>
+                    </div>
+                    
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

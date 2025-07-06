@@ -49,6 +49,13 @@ else
     app.UseHsts();
 }
 
+// This is for simplicity of this project
+// In a production project CORS needs to be configured properly
+app.UseCors(policy => policy
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
