@@ -11,5 +11,11 @@ export const routes: Routes = [
         path: 'login',
         loadComponent: () => import('./components/login-page/login-page.component').then(m => m.LoginPageComponent),
         title: 'Login'
+    },
+    {
+        path: 'employee-single',
+        loadComponent: () => import('./components/employee-single/employee-single.component').then(m => m.EmployeeSingleComponent),
+        // canActivate: [AuthGuard],
+        title: 'Employee Single'
     }
 ];

@@ -1,0 +1,89 @@
+<p-toast />
+<div class="p-5">
+    <p-button (click)="goToMainPage()" label="Back" icon="pi pi-arrow-left" severity="secondary"/>
+</div>
+
+<div class="p-5">
+  <h1 class="text-4xl text-center font-bold">Enter Employee ID</h1>
+  
+  <!-- Search Section -->
+  <div class="flex justify-center mt-8">
+    <div class="flex flex-column gap-3 w-full max-w-md">
+        <div class="flex gap-3">
+            <div class="p-inputgroup flex-1">
+                <span class="p-inputgroup-addon" style="padding: 0 12px;">
+                <i class="pi pi-search"></i>
+                </span>
+                <input 
+                type="text" 
+                pInputText 
+                placeholder="Enter Employee ID" 
+                [(ngModel)]="employeeId"
+                (keyup.enter)="searchEmployee()"
+                />
+            </div>
+            <p-button 
+                label="Search" 
+                (click)="searchEmployee()"
+                [loading]="loading"
+                ></p-button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Employee Details Section -->
+  <div *ngIf="employee" class="mt-8 flex justify-center">
+    <div class="w-full max-w-2xl">
+      <p-card header="Employee Details" styleClass="shadow-lg">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">ID:</label>
+              <p class="mt-1 text-gray-900">{{ employee.id || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">First Name:</label>
+              <p class="mt-1 text-gray-900">{{ employee.firstName || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">Last Name:</label>
+              <p class="mt-1 text-gray-900">{{ employee.lastName || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">Email:</label>
+              <p class="mt-1 text-gray-900">{{ employee.email || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">Phone Number:</label>
+              <p class="mt-1 text-gray-900">{{ employee.phoneNumber || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label class="font-semibold text-gray-700">Position:</label>
+              <p class="mt-1 text-gray-900">{{ employee.position || 'N/A' }}</p>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div *ngIf="searched && !employee && !loading" class="mt-8 flex justify-center">
+    <p-message severity="info" text="No employee found with the provided ID."></p-message>
+  </div>
+</div>

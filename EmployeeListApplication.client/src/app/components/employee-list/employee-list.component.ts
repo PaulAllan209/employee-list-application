@@ -148,4 +148,8 @@ export class EmployeeListComponent {
       }
     });
   }
+
+  goToEmployeeSinglePage() {
+    this.router.navigate(['/employee-single']);
+  }
 }
