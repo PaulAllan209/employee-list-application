@@ -26,8 +26,9 @@ export class EmployeeSingleComponent {
 
   employeeService = inject(EmployeeService);
   router = inject(Router);
+  messageService = inject(MessageService);
 
-  constructor(private messageService: MessageService) {}
+  constructor() {}
 
   searchEmployee(): void {
     if (!this.employeeId.trim()) {

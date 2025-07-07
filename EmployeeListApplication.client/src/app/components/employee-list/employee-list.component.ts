@@ -11,6 +11,7 @@ import { Employee } from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-employee-list',
@@ -29,6 +30,8 @@ export class EmployeeListComponent {
 
   authService = inject(AuthService);
   router = inject(Router);
+  messageService = inject(MessageService);
+  
   
 
   constructor(private employeeService: EmployeeService) {}
@@ -68,9 +71,20 @@ export class EmployeeListComponent {
       next: (createdEmployee) => {
         this.createEmployeeVisible = false;
         this.fetchEmployees(); // refresh the list
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Employee Created Successfully!'
+        });
       },
-      error: (err) => {
-        console.error('Error creating employee', err);
+      error: (error) => {
+        console.error('Error creating employee', error);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Failed to create employee', 
+          detail: error.error?.message || 'Error in creating Employee', 
+          life: 3000
+        });
       }
     });
   }
@@ -116,10 +130,21 @@ export class EmployeeListComponent {
               this.employees[index] = { ...updatedEmployee };
             }
             this.cancelEdit();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Employee Updated Successfully!'
+            });
         },
           error: (error) => {
             console.error('Error updating employee:', error);
             this.cancelEdit();
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Failed to update employee', 
+              detail: error.error?.message || 'Error in updating Employee', 
+              life: 3000
+            });
         }
       });
       }
@@ -142,9 +167,20 @@ export class EmployeeListComponent {
     this.employeeService.deleteEmployee(id).subscribe({
       next: () => {
         this.employees = this.employees.filter(emp => emp.id !== id);
+        this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Employee Deleted Successfully!'
+            });
       },
-      error: (err) => {
-        console.error('Error deleting employee', err);
+      error: (error) => {
+        console.error('Error deleting employee', error);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Failed to delete employee', 
+          detail: error.error?.message || 'Error in deleting Employee', 
+          life: 3000
+        });
       }
     });
   }
