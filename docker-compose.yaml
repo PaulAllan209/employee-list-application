@@ -28,10 +28,26 @@ services:
       dockerfile: EmployeeListApplication.Server/Dockerfile
     ports:
       - "5001:8080"
+    depends_on:
+      employee-list-application-ms-sql-server:
+        condition: service_healthy
     volumes:
       - ./secrets.json:/app/secrets.json:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
     networks:
       - employee-list-application-network
+
+  employee-list-application-frontend:
+    build:
+      context: ./EmployeeListApplication.client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    networks:
+      - employee-list-application-network
+    depends_on:
+      - employee-list-application-backend
 
 networks:
   employee-list-application-network:
