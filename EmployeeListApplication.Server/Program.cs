@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+// Hard coded secret values (only for quick projects)
+const string secretKey = "YourSuperSecretKeyForDevelopment12345";
+Environment.SetEnvironmentVariable("SECRET", secretKey);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -44,7 +48,6 @@ builder.Services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
 
 // Configure anything auth related
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-const string secretKey = "YourSuperSecretKeyForDevelopment12345";
 
 builder.Services.AddAuthentication(opt =>
     {
@@ -57,7 +60,7 @@ builder.Services.AddAuthentication(opt =>
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
 
             ValidIssuer = jwtSettings["validIssuer"],

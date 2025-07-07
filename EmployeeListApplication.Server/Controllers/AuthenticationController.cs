@@ -38,5 +38,14 @@ namespace EmployeeListApplication.Server.Controllers
 
             return Created();
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
+        {
+            if (!await _authenticationService.ValidateUser(user.UserName, user.Password))
+                return Unauthorized();
+
+            return Ok(new { Token = await _authenticationService.CreateToken() });
+        }
     }
 }

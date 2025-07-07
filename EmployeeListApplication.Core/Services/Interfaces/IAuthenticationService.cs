@@ -11,5 +11,7 @@ namespace EmployeeListApplication.Core.Services.Interfaces
     public interface IAuthenticationService
     {
         Task<IdentityResult> RegisterUser(User userForRegistration, string password);
+        Task<bool> ValidateUser(string username, string password);
+        Task<string> CreateToken();
     }
 }
