@@ -46,7 +46,7 @@
         <button pButton severity="primary" type="submit" [disabled]="loginForm.invalid">
             <span pButtonLabel>Login</span>
         </button>
-        <button pButton severity="secondary" type="submit">
+        <button pButton severity="secondary" type="button" (click)="register(loginForm)">
             <span pButtonLabel>Register</span>
         </button>
     </form>

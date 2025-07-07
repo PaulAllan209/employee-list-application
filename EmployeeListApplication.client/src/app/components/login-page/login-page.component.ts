@@ -29,19 +29,12 @@ export class LoginPageComponent {
 
     onSubmit(form: any) {
         if (form.valid) {
-            this.messageService.add({ 
-                severity: 'success', 
-                summary: 'Success', 
-                detail: `Welcome ${this.loginData.username}!`, 
-                life: 3000 
-            });
-            
             this.authService.login(this.loginData).subscribe({
               next: (response) => {
                 this.messageService.add({ 
                   severity: 'success', 
                   summary: 'Success', 
-                  detail: `${response.token}`, 
+                  detail: 'Welcome!', 
                   life: 3000
                 });
                 this.router.navigate(['/']);
@@ -70,6 +63,39 @@ export class LoginPageComponent {
                 life: 3000 
             });
         }
+    }
+
+    register(form: any) {
+      if(form.valid) {
+        this.authService.register(this.loginData).subscribe({
+          next: (response) => {
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Register Success', 
+              detail: 'Successfully Registered!', 
+              life: 3000
+          });
+        },
+          error: (error) => {
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Register Failed', 
+              detail: error.error?.message || 'Invalid username or password', 
+              life: 3000
+            });
+          }
+      });
+      } else {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Please fill in all required fields', 
+            life: 3000 
+          });
+        }
+
+      form.resetForm();
+      this.loginData = { username: '', password: '' };
     }
 
     

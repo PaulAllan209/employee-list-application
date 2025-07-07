@@ -72,11 +72,11 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddIdentityCore<User>(o =>
 {
-    o.Password.RequireDigit = true;
+    o.Password.RequireDigit = false;
     o.Password.RequireLowercase = false;
     o.Password.RequireUppercase = false;
     o.Password.RequireNonAlphanumeric = false;
-    o.Password.RequiredLength = 10;
+    o.Password.RequiredLength = 5;
     o.User.RequireUniqueEmail = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
