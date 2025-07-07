@@ -1,14 +1,13 @@
-using AutoMapper;
 using EmployeeListApplication.Core.Infrastructure;
 using EmployeeListApplication.Core.Infrastructure.Interfaces;
 using EmployeeListApplication.Core.Infrastructure.Repositories;
 using EmployeeListApplication.Core.Infrastructure.Repositories.Interfaces;
+using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +38,20 @@ builder.Services.AddSwaggerGen();
 // For Auto DB Creation and Seeding
 builder.Services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
 
+// Configure anything auth related
+builder.Services.AddIdentityCore<User>(o =>
+{
+    o.Password.RequireDigit = true;
+    o.Password.RequireLowercase = false;
+    o.Password.RequireUppercase = false;
+    o.Password.RequireNonAlphanumeric = false;
+    o.Password.RequiredLength = 10;
+    o.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddAuthentication();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,6 +76,7 @@ app.UseCors(policy => policy
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
