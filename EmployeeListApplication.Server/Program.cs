@@ -1,14 +1,20 @@
-using AutoMapper;
+using System.Text;
 using EmployeeListApplication.Core.Infrastructure;
 using EmployeeListApplication.Core.Infrastructure.Interfaces;
 using EmployeeListApplication.Core.Infrastructure.Repositories;
 using EmployeeListApplication.Core.Infrastructure.Repositories.Interfaces;
+using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+
+// Hard coded secret values (only for quick projects)
+const string secretKey = "YourSuperSecretKeyForDevelopment12345";
+Environment.SetEnvironmentVariable("SECRET", secretKey);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +24,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Register Services
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 // Register Repositories
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -38,6 +45,43 @@ builder.Services.AddSwaggerGen();
 
 // For Auto DB Creation and Seeding
 builder.Services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
+
+// Configure anything auth related
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+
+builder.Services.AddAuthentication(opt =>
+    {
+        opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["validIssuer"],
+            ValidAudience = jwtSettings["validAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+
+    });
+
+builder.Services.AddIdentityCore<User>(o =>
+{
+    o.Password.RequireDigit = false;
+    o.Password.RequireLowercase = false;
+    o.Password.RequireUppercase = false;
+    o.Password.RequireNonAlphanumeric = false;
+    o.Password.RequiredLength = 5;
+    o.User.RequireUniqueEmail = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
 
 var app = builder.Build();
 
@@ -63,6 +107,7 @@ app.UseCors(policy => policy
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

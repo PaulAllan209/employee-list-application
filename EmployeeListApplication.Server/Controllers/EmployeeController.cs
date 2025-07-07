@@ -3,6 +3,7 @@ using Azure;
 using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeForCreateDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -37,6 +39,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllEmployees()
         {
             var employeeEntities = await _employeeService.GetAllEmployeesAsync(trackChanges: false);
@@ -47,6 +50,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpGet("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> GetEmployeeById(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
@@ -63,6 +67,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpPatch("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> PatchEmployee(string employeeId, [FromBody] JsonPatchDocument<EmployeeForPatchDto> patchDoc)
         {
             if (patchDoc == null)
@@ -110,6 +115,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpDelete("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEmployee(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
