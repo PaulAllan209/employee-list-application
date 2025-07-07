@@ -1,0 +1,53 @@
+<p-toast />
+<div class="p-5">
+  <h1 class="text-4xl text-center font-bold">Login</h1>
+</div>
+<div class="card flex justify-center">
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="flex justify-center flex-col gap-8 w-full md:w-80">
+        <div class="flex flex-col gap-2">
+            <p-floatlabel>
+                <input 
+                    pInputText 
+                    id="username"
+                    name="username"
+                    #username="ngModel"
+                    [(ngModel)]="loginData.username"
+                    [class.ng-invalid]="username.invalid && (username.touched || loginForm.submitted)"
+                    required
+                    fluid
+                />
+                <label for="username">Username</label>
+            </p-floatlabel>
+            @if (username.invalid && (username.touched || loginForm.submitted)) {
+                <p-message severity="error" size="small" variant="simple">Username is required.</p-message>
+            }
+        </div>
+        
+        <div class="flex flex-col gap-2">
+            <p-floatlabel>
+                <p-password 
+                    id="password"
+                    name="password"
+                    #password="ngModel"
+                    [(ngModel)]="loginData.password"
+                    [class.ng-invalid]="password.invalid && (password.touched || loginForm.submitted)"
+                    [feedback]="false"
+                    [toggleMask]="true"
+                    required
+                    fluid
+                />
+                <label for="password">Password</label>
+            </p-floatlabel>
+            @if (password.invalid && (password.touched || loginForm.submitted)) {
+                <p-message severity="error" size="small" variant="simple">Password is required.</p-message>
+            }
+        </div>
+        
+        <button pButton severity="primary" type="submit" [disabled]="loginForm.invalid">
+            <span pButtonLabel>Login</span>
+        </button>
+        <button pButton severity="secondary" type="submit">
+            <span pButtonLabel>Register</span>
+        </button>
+    </form>
+</div>

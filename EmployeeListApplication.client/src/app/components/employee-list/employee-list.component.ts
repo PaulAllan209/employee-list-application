@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-// import { Product } from '@/domain/product';
-// import { ProductService } from '@/service/productservice';
+import { Component, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
@@ -8,14 +6,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
 import { Employee } from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
-import { ApiResponse } from '../../models/api-response.model';
-
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [TableModule, CommonModule, ButtonModule, Dialog, InputTextModule, FormsModule, TooltipModule],
+  imports: [TableModule, CommonModule, ButtonModule, Dialog, InputTextModule, FormsModule, TooltipModule, ToastModule],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss'
 })
@@ -27,6 +26,10 @@ export class EmployeeListComponent {
   editingEmployeeId: string | null = null;
   editingEmployee: Employee | null = null;
   originalEmployee: Employee | null = null;
+
+  authService = inject(AuthService);
+  router = inject(Router);
+  
 
   constructor(private employeeService: EmployeeService) {}
 
@@ -54,6 +57,11 @@ export class EmployeeListComponent {
   ngOnInit(){
     this.fetchEmployees();
   }
+
+  logout() {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+  };
 
   saveEmployee() {
     this.employeeService.createEmployee(this.newEmployee).subscribe({

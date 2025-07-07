@@ -23,6 +23,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeForCreateDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -49,6 +50,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpGet("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> GetEmployeeById(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
@@ -65,6 +67,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpPatch("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> PatchEmployee(string employeeId, [FromBody] JsonPatchDocument<EmployeeForPatchDto> patchDoc)
         {
             if (patchDoc == null)
@@ -112,6 +115,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpDelete("{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEmployee(string employeeId)
         {
             if (string.IsNullOrEmpty(employeeId))
