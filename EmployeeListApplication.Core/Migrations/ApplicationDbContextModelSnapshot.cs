@@ -54,7 +54,7 @@ namespace EmployeeListApplication.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
 
                     b.HasData(
                         new

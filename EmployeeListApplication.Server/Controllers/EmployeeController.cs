@@ -3,6 +3,7 @@ using Azure;
 using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +38,7 @@ namespace EmployeeListApplication.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllEmployees()
         {
             var employeeEntities = await _employeeService.GetAllEmployeesAsync(trackChanges: false);

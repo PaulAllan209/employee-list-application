@@ -11,6 +11,8 @@ namespace EmployeeListApplication.Server
             CreateMap<EmployeeForCreateDto, Employee>().ReverseMap();
             CreateMap<EmployeeForGetDto, Employee>().ReverseMap();
             CreateMap<EmployeeForPatchDto, Employee>().ReverseMap();
+
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }

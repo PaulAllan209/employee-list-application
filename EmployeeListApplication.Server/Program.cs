@@ -1,3 +1,4 @@
+using System.Text;
 using EmployeeListApplication.Core.Infrastructure;
 using EmployeeListApplication.Core.Infrastructure.Interfaces;
 using EmployeeListApplication.Core.Infrastructure.Repositories;
@@ -6,8 +7,10 @@ using EmployeeListApplication.Core.Models;
 using EmployeeListApplication.Core.Services;
 using EmployeeListApplication.Core.Services.Interfaces;
 using EmployeeListApplication.Server;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Register Services
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 // Register Repositories
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -39,6 +43,31 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
 
 // Configure anything auth related
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+const string secretKey = "YourSuperSecretKeyForDevelopment12345";
+
+builder.Services.AddAuthentication(opt =>
+    {
+        opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["validIssuer"],
+            ValidAudience = jwtSettings["validAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+
+        };
+
+    });
+
 builder.Services.AddIdentityCore<User>(o =>
 {
     o.Password.RequireDigit = true;
@@ -46,11 +75,11 @@ builder.Services.AddIdentityCore<User>(o =>
     o.Password.RequireUppercase = false;
     o.Password.RequireNonAlphanumeric = false;
     o.Password.RequiredLength = 10;
-    o.User.RequireUniqueEmail = true;
+    o.User.RequireUniqueEmail = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
-builder.Services.AddAuthentication();
+
 
 var app = builder.Build();
 
