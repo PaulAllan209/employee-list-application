@@ -1,0 +1,56 @@
+services:
+  employee-list-application-ms-sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrongPassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer" # Means developer edition of Sql server
+    ports:
+      - "1435:1433"
+    volumes:
+      - employee-list-application-sql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "if ! timeout 10 bash -c '</dev/tcp/localhost/1433'; then exit 1; fi"]
+      interval: 15s
+      retries: 20
+      start_period: 180s
+      timeout: 20s
+    networks:
+      - employee-list-application-network
+    deploy:
+      resources:
+        limits:
+          memory: 1.5GB
+  
+  employee-list-application-backend:
+    build:
+      context: .
+      dockerfile: EmployeeListApplication.Server/Dockerfile
+    ports:
+      - "5001:8080"
+    depends_on:
+      employee-list-application-ms-sql-server:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    networks:
+      - employee-list-application-network
+
+  employee-list-application-frontend:
+    build:
+      context: ./EmployeeListApplication.client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    networks:
+      - employee-list-application-network
+    depends_on:
+      - employee-list-application-backend
+
+networks:
+  employee-list-application-network:
+    driver: bridge
+
+volumes:
+  employee-list-application-sql-data:
+      
